@@ -8,7 +8,7 @@ const Herosection = () => {
         <img
           src={banner}
           alt=""
-          className="w-full object-cover object-center"
+          className="w-full  h-svh object-cover object-center"
         />
       </div>
       <div className="absolute top-[40%] w-full text-end right-5">

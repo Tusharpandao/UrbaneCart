@@ -9,9 +9,29 @@ import SignIn from './pages/SignIn/SignIn'
 import SignUp from './pages/SignUp/SignUp'
 import Mens from './components/Mens/Mens'
 import Kids from './components/Kids/Kids'
+import { useState } from 'react'
 
 function App() {
   
+  const[cart, setCart] = useState([])
+
+ 
+  const AddToCart = (product) => {
+    // Check if the product is already in the cart
+    const existingProductIndex = cart.findIndex(item => item.id === product.id);
+    
+    if (existingProductIndex !== -1) {
+        // If the product exists, update its quantity
+        const updatedCart = [...cart];
+        updatedCart[existingProductIndex].quantity++;
+        setCart(updatedCart);
+        // console.log(updatedCart);
+    } else {
+        // If the product is not in the cart, add it with quantity 1
+        setCart([...cart, {...product, quantity: 1}]);
+    }
+}
+
 
   return (
     <>
@@ -19,8 +39,8 @@ function App() {
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>}/>
-          <Route path="/cart" element={<Cart/>}/>
-          <Route path="/allProducts" element={<AllProducts/>}/>
+          <Route path="/cart" element={<Cart cart={cart}/>}/>
+          <Route path="/allProducts" element={<AllProducts AddToCart={AddToCart}/>}/>
           <Route path="/signUp" element={<SignUp/>}/>
           <Route path="/signIn" element={<SignIn/>}/>
           <Route path="/mens" element={<Mens/>}/>

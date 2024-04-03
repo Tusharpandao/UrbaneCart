@@ -5,10 +5,7 @@ import loginImage from "../../assets/login.png";
 function SignIn() {
   return (
     <Layout>
-      <section
-        className="text-gray-600 body-font"
-        style={{ backgroundImage: `url(${loginImage})` }}
-      >
+      <section className="text-gray-600 body-font" style={{ backgroundImage: `url(${loginImage})` }}>
         <div className="container px-5 py-14 mx-auto flex flex-wrap items-center">
           <div className="lg:w-2/6 md:w-1/2 bg-gray-100 opacity-95  rounded-lg p-8 flex flex-col m-auto ">
             <h2 className="text-gray-900 text-lg font-medium title-font mb-5">
