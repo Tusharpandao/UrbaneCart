@@ -60,11 +60,17 @@ const NavBar = () => {
                     </li>
                   </Link>
 
+                  <Link to="/allProducts">
                   <li className="mr-5 hover:text-gray-900 cursor-pointer">
                     All Product
                   </li>
-                  <li className="mr-5 hover:text-gray-900 cursor-pointer">Mens</li>
-                  <li className="mr-5 hover:text-gray-900 cursor-pointer">Kids</li>
+                  </Link>
+                  <Link to="/mens">
+                <li className="mr-5 hover:text-gray-900 cursor-pointer">Mens</li>
+                </Link>
+               <Link to="/kids">
+               <li className="mr-5 hover:text-gray-900 cursor-pointer">Kids</li>
+               </Link>
                 </ul>
                 <button className="absolute top-[75px] z-10 right-5 text-white py-4 cursor-pointer  ">
                   <RxCrossCircled onClick={toggleChange} size={30} />

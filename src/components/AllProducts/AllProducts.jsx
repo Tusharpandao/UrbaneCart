@@ -5,21 +5,63 @@ import { PiStarThin } from "react-icons/pi";
 
 const AllProducts = ({AddToCart}) => {
   const [products, setProducts] = useState([]);
+  // const [allProducts, setAllProducts] = useState([]);
 
   const [allCategory, setAllCategory] = useState([]);
   const [selectProduct, setSelectProduct] = useState("");
 
   const productsAPI = "https://dummyjson.com/products";
+  const [allCategoryProduct, setAllCategoryProduct] = useState([]);
+
+  useEffect(() => {
+    const productsAPI = 'https://dummyjson.com/products/categories';
+    
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(productsAPI);
+        const categories = response.data;
+  
+        // Filter out unwanted categories
+        const filteredCategories = categories.filter(category => {
+          return !["furniture", "automotive", "motorcycle"].includes(category);
+        });
+  
+        // Fetch products for each remaining category
+        const productsByCategory = await Promise.all(
+          filteredCategories.map(async (category) => {
+            const categoryProductsAPI = `https://dummyjson.com/products/category/${category}`;
+            const productResponse = await axios.get(categoryProductsAPI);
+            return productResponse.data.products;
+          })
+        );
+  
+        // Flatten the array of arrays
+        const allProducts = productsByCategory.flat();
+  
+        // Update state with all products
+        setProducts(allProducts);
+      } catch (error) {
+        console.error('Error fetching categories and products:', error);
+      }
+    };
+  
+    // Call the fetchCategories function when the component mounts
+    fetchCategories();
+  }, []);
+  
+  
+   
+  
 
   // for getting all products and set that products  to the state
-  useEffect(() => {
-    const allProduct = async () => {
-      const res = await axios(productsAPI);
-      setProducts(res.data.products);
-      // console.log(res.data.products);
-    };
-    allProduct();
-  }, []);
+  // useEffect(() => {
+  //   const allProduct = async () => {
+  //     const res = await axios(productsAPI);
+  //     setProducts(res.data.products);
+  //     // console.log(res.data.products);
+  //   };
+  //   allProduct();
+  // }, []);
 
   //for getting all product categories
   useEffect(() => {
