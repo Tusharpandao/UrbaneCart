@@ -25,7 +25,6 @@ function App() {
         const updatedCart = [...cart];
         updatedCart[existingProductIndex].quantity++;
         setCart(updatedCart);
-        // console.log(updatedCart);
     } else {
         // If the product is not in the cart, add it with quantity 1
         setCart([...cart, {...product, quantity: 1}]);
@@ -39,8 +38,8 @@ function App() {
         <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>}/>
-          <Route path="/cart" element={<Cart cart={cart}/>}/>
-          <Route path="/allProducts" element={<AllProducts AddToCart={AddToCart}/>}/>
+          <Route path="/cart" element={<Cart cart={cart} setCart={setCart}/>}/>
+          <Route path="/allProducts" element={<AllProducts AddToCart={AddToCart} />}/>
           <Route path="/signUp" element={<SignUp/>}/>
           <Route path="/signIn" element={<SignIn/>}/>
           <Route path="/mens" element={<Mens/>}/>
