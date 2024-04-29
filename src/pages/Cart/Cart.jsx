@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
+import { toast } from "react-toastify";
+
 
 const Cart = ({ cart, setCart }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [itemToRemoveId,setItemToRemoveId]=useState(null)
   const [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
+  const [promoCode, setPromoCode] = useState("");
+  const [discountApplied, setDiscountApplied] = useState(true);
+
   useEffect(() => {
     // Calculate total price for all items in the cart
     const totalPrice = cart.reduce((total, cartItem) => {
@@ -79,6 +84,24 @@ const handleDec = (item) => {
     setCart(updatedCart);
   }
 }
+const applyPromoCode = () => {
+  if (promoCode.toUpperCase() === "NEW50" ) {
+    if (discountApplied) {
+      let discountedPrice = totalPrice /2
+    // Apply discount
+    setTotalPrice(discountedPrice)
+    setDiscountApplied(false);
+    toast.success("Promo Code Applied")
+
+
+    }else{
+        toast.error("Promo Code Already Applied")
+
+    }
+  } else {
+    toast.error("Invalid promo code");
+  }
+};
 
 
   return (
@@ -200,9 +223,14 @@ const handleDec = (item) => {
                 id="promo"
                 placeholder="Enter your code"
                 className="p-2 text-sm w-full"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                
+
               />
             </div>
-            <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">
+            <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase"
+             onClick={applyPromoCode}>
               Apply
             </button>
             <div className="border-t mt-8">

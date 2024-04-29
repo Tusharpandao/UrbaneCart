@@ -11,6 +11,7 @@ import Mens from './components/Mens/Mens'
 import Kids from './components/Kids/Kids'
 import { useState } from 'react'
 
+
 function App() {
   
   const[cart, setCart] = useState([])
@@ -42,7 +43,7 @@ function App() {
           <Route path="/allProducts" element={<AllProducts AddToCart={AddToCart} />}/>
           <Route path="/signUp" element={<SignUp/>}/>
           <Route path="/signIn" element={<SignIn/>}/>
-          <Route path="/mens" element={<Mens/>}/>
+          <Route path="/mens" element={<Mens  AddToCart={AddToCart}/>}/>
           <Route path="/kids" element={<Kids/>}/>
           
 

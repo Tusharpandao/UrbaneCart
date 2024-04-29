@@ -46,7 +46,7 @@ const Footer = () => {
                 <li className="mt-1">Contact Sales</li>
                 <li className="mt-1">+918767995517</li>
                 <li className="mt-1">Email</li>
-                <li className="mt-1">urbanecart@gmail.com</li>
+                <li className="mt-1">carturbane@gmail.com</li>
               </ul>
             </div>
             <div className="lg:w-1/4 md:w-1/2 w-full px-4">

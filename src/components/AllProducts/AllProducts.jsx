@@ -17,6 +17,7 @@ const AllProducts = ({ AddToCart }) => {
       try {
         const response = await axios.get(categoryAPI);
         const categories = response.data;
+        console.log(categories);
 
         // Filter out unwanted categories
         const filteredCategories = categories.filter((category) => {

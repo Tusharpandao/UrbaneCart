@@ -3,33 +3,54 @@ import Layout from "../Layout/Layout";
 import axios from "axios";
 import { PiStarThin } from "react-icons/pi";
 
-const Mens = () => {
+const Mens = ({ AddToCart }) => {
   const [products, setProducts] = useState([]);
-
   const [allCategory, setAllCategory] = useState([]);
   const [selectProduct, setSelectProduct] = useState("");
 
   const productsAPI = "https://dummyjson.com/products";
-
-  // for getting all products and set that products  to the state
+  //for getting all products and set that products  to the state
   useEffect(() => {
-    const allProduct = async () => {
-      const res = await axios(productsAPI);
-      let data = res.data.products;
-      
-      const filteredProducts = data.filter((product) =>
-        [
-          "fragrances",
-          "skincare",
-          "mens-shirts",
-          "mens-shoes",
-          "mens-watches",
-          "sunglasses",
-        ].includes(product.category)
-      );
-      setProducts(filteredProducts);
+    const categoryAPI = `${productsAPI}/categories`;
+
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(categoryAPI);
+        const categories = response.data;
+
+        // Filter out unwanted categories
+        const filteredCategories = categories.filter((category) => {
+          return [
+            "fragrances",
+            "skincare",
+            "mens-shirts",
+            "mens-shoes",
+            "mens-watches",
+            "sunglasses",
+          ].includes(category);
+        });
+
+        // Fetch products for each remaining category
+        const productsByCategory = await Promise.all(
+          filteredCategories.map(async (category) => {
+            const categoryProductsAPI = `${productsAPI}/category/${category}`;
+            const productResponse = await axios.get(categoryProductsAPI);
+            return productResponse.data.products;
+          })
+        );
+
+        // Flatten the array of arrays
+        const allProducts = productsByCategory.flat();
+
+        // Update state with all products
+        setProducts(allProducts);
+      } catch (error) {
+        console.error("Error fetching categories and products:", error);
+      }
     };
-    allProduct();
+
+    // Call the fetchCategories function when the component mounts
+    fetchCategories();
   }, []);
 
   //for getting all product categories
@@ -44,6 +65,7 @@ const Mens = () => {
     };
     getAllProductCategory();
   }, []);
+
   //for getting category vise product
   useEffect(() => {
     const getCategoryProducts = async () => {
@@ -51,7 +73,6 @@ const Mens = () => {
         if (selectProduct) {
           let res = await axios(`${productsAPI}/category/${selectProduct}`);
           setProducts(res.data.products);
-          console.log(res.data.products);
         }
       } catch (error) {
         console.log(error);
@@ -64,9 +85,6 @@ const Mens = () => {
   const filterProducts = (selectedCategory) => {
     // console.log(selectedCategory);
     setSelectProduct(selectedCategory);
-    // const data=products.filter((filterItems)=>filterItems.category === selectedCategory);
-    // setProducts(data)
-    // console.log(data);
   };
   return (
     <>
@@ -122,7 +140,10 @@ const Mens = () => {
                         <PiStarThin size={20} color="black" /> {item.rating}
                       </span>
                       <span className="mr-10">
-                        <button className="bg-indigo-600 text-white p-2 rounded-md">
+                        <button
+                          className="bg-indigo-600 text-white p-2 rounded-md"
+                          onClick={() => AddToCart(item)}
+                        >
                           Add to cart
                         </button>
                       </span>
