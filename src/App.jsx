@@ -8,8 +8,8 @@ import AllProducts from './components/AllProducts/AllProducts'
 import SignIn from './pages/SignIn/SignIn'
 import SignUp from './pages/SignUp/SignUp'
 import Mens from './components/Mens/Mens'
-import Kids from './components/Kids/Kids'
 import { useState } from 'react'
+import Womens from './components/Womens/Womens'
 
 
 function App() {
@@ -44,7 +44,7 @@ function App() {
           <Route path="/signUp" element={<SignUp/>}/>
           <Route path="/signIn" element={<SignIn/>}/>
           <Route path="/mens" element={<Mens  AddToCart={AddToCart}/>}/>
-          <Route path="/kids" element={<Kids/>}/>
+          <Route path="/Womens" element={<Womens AddToCart={AddToCart}/>}/>
           
 
           
