@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
-
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Cart = ({ cart, setCart }) => {
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [itemToRemoveId,setItemToRemoveId]=useState(null)
-  const [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
-  const [promoCode, setPromoCode] = useState("");
-  const [discountApplied, setDiscountApplied] = useState(true);
+  let  [totalPrice, setTotalPrice] = useState(0);
+  let  [itemToRemoveId, setItemToRemoveId] = useState(null);
+  let  [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
+  let  [promoCode, setPromoCode] = useState("");
+  let  [discountApplied, setDiscountApplied] = useState(true);
+  let navigate=useNavigate()
+  
 
   useEffect(() => {
     // Calculate total price for all items in the cart
@@ -18,13 +21,12 @@ const Cart = ({ cart, setCart }) => {
     // Set the total price state
     setTotalPrice(totalPrice);
 
-    const getTotalQuantity= () => {
+    const getTotalQuantity = () => {
       let totalQuantity = 0;
       cart.forEach((item) => {
         totalQuantity += item.quantity;
       });
       return totalQuantity;
-
     };
     setTotalItemsQuantity(getTotalQuantity);
   }, [cart]);
@@ -34,7 +36,7 @@ const Cart = ({ cart, setCart }) => {
     // Update the cart state
     setCart(updatedCart);
   };
-  
+
   const handleInc = (item) => {
     // Create a new array to avoid mutating the original state
     const updatedCart = [...cart];
@@ -47,62 +49,64 @@ const Cart = ({ cart, setCart }) => {
       if (updatedCart[itemIndex].quantity < item.stock) {
         updatedCart[itemIndex].quantity++;
       } else {
-        alert("You have reached the maximum amount available for this product.");
+        alert(
+          "You have reached the maximum amount available for this product."
+        );
       }
-    // Update the cart state with the updated array
-    setCart(updatedCart);
+      // Update the cart state with the updated array
+      setCart(updatedCart);
+    }
   };
-}
 
-useEffect(() => {
-  // Call removeFromCart after the cart state has been updated
-  if (itemToRemoveId !== null) {
-    removeFromCart(itemToRemoveId);
-    setItemToRemoveId(null);
-  }
-}, [cart, itemToRemoveId]);
+  useEffect(() => {
+    // Call removeFromCart after the cart state has been updated
+    if (itemToRemoveId !== null) {
+      removeFromCart(itemToRemoveId);
+      setItemToRemoveId(null);
+    }
+  }, [cart, itemToRemoveId]);
 
-const handleDec = (item) => {
-  // Create a new array to avoid mutating the original state
-  const updatedCart = [...cart];
-  // Find the index of the item in the cart
-  const itemIndex = updatedCart.findIndex(
-    (cartItem) => cartItem.id === item.id
-  );
-  // If the item is found, decrement its quantity
-  if (itemIndex !== -1) {
-    if (updatedCart[itemIndex].quantity > 1) {
-      updatedCart[itemIndex].quantity--;
-    } else {
-      let confirmation=window.confirm(`You have reached the minimum quantity for this product.  Are you sure you want to remove it?`)
-      if (confirmation) {
-        setItemToRemoveId(item.id);
+  const handleDec = (item) => {
+    // Create a new array to avoid mutating the original state
+    const updatedCart = [...cart];
+    // Find the index of the item in the cart
+    const itemIndex = updatedCart.findIndex(
+      (cartItem) => cartItem.id === item.id
+    );
+    // If the item is found, decrement its quantity
+    if (itemIndex !== -1) {
+      if (updatedCart[itemIndex].quantity > 1) {
+        updatedCart[itemIndex].quantity--;
+      } else {
+        let confirmation = window.confirm(
+          `You have reached the minimum quantity for this product.  Are you sure you want to remove it?`
+        );
+        if (confirmation) {
+          setItemToRemoveId(item.id);
+        }
       }
-      
+      // Update the cart state with the updated array
+      setCart(updatedCart);
     }
-    // Update the cart state with the updated array
-    setCart(updatedCart);
-  }
+  };
+  const applyPromoCode = () => {
+    if (promoCode.toUpperCase() === "NEW50") {
+      if (discountApplied) {
+        let discountedPrice = totalPrice / 2;
+        // Apply discount
+        setTotalPrice(discountedPrice);
+        setDiscountApplied(false);
+        toast.success("Promo Code Applied");
+      } else {
+        toast.error("Promo Code Already Applied");
+      }
+    } else {
+      toast.error("Invalid promo code");
+    }
+  };
+let continueShopping=()=>{
+  navigate(-1)
 }
-const applyPromoCode = () => {
-  if (promoCode.toUpperCase() === "NEW50" ) {
-    if (discountApplied) {
-      let discountedPrice = totalPrice /2
-    // Apply discount
-    setTotalPrice(discountedPrice)
-    setDiscountApplied(false);
-    toast.success("Promo Code Applied")
-
-
-    }else{
-        toast.error("Promo Code Already Applied")
-
-    }
-  } else {
-    toast.error("Invalid promo code");
-  }
-};
-
 
   return (
     <Layout>
@@ -176,18 +180,10 @@ const applyPromoCode = () => {
             ))}
 
             {/* Products container end*/}
-            <a
-              href="#"
-              className="flex font-semibold text-indigo-600 text-sm mt-10"
-            >
-              <svg
-                className="fill-current mr-2 text-indigo-600 w-4"
-                viewBox="0 0 448 512"
-              >
-                <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-              </svg>
+            <button className="flex items-center font-semibold text-indigo-600 text-sm mt-10" onClick={()=>{{continueShopping()}}} >
+            <FaLongArrowAltLeft size={20}/>
               Continue Shopping
-            </a>
+            </button>
           </div>
 
           <div
@@ -225,12 +221,12 @@ const applyPromoCode = () => {
                 className="p-2 text-sm w-full"
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value)}
-                
-
               />
             </div>
-            <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase"
-             onClick={applyPromoCode}>
+            <button
+              className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase"
+              onClick={applyPromoCode}
+            >
               Apply
             </button>
             <div className="border-t mt-8">
