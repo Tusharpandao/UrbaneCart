@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../Layout/Layout";
 import axios from "axios";
 import { PiStarThin } from "react-icons/pi";
 
 const AllProducts = ({ AddToCart }) => {
-  let  [products, setProducts] = useState([]);
-  let  [allProducts, setAllProducts] = useState([]);
-  let  [category, setCategory] = useState([]);
-  let  [selectProductCategory, setSelectProductsCategory] = useState("");
+  let [products, setProducts] = useState([]);
+  let [allProducts, setAllProducts] = useState([]);
+  let [category, setCategory] = useState([]);
+  let [selectProductCategory, setSelectProductsCategory] = useState("");
 
   const productsAPI = "http://localhost:8084";
 
@@ -17,7 +16,7 @@ const AllProducts = ({ AddToCart }) => {
       try {
         const response = await axios.get(`${productsAPI}/products`);
         // Filter products based on specified categories
-        let filterProducts=response.data.data;
+        let filterProducts = response.data.data;
         setProducts(filterProducts);
         setAllProducts(filterProducts);
       } catch (error) {
@@ -42,9 +41,9 @@ const AllProducts = ({ AddToCart }) => {
     getAllProductCategory();
   }, []);
 
-  //filter product by category 
+  //filter product by category
   useEffect(() => {
-   let  getCategoryProducts = async () => {
+    let getCategoryProducts = async () => {
       try {
         if (selectProductCategory) {
           let selectedProducts = allProducts.filter((product) => {
@@ -67,8 +66,7 @@ const AllProducts = ({ AddToCart }) => {
   };
   return (
     <>
-      <Layout>
-        <div className="container mx-auto">
+      <div className="container mx-auto">
         <div className=" flex gap-3 flex-wrap relative x-20 ">
           <select
             onChange={(e) => filterProducts(e.target.value)}
@@ -110,7 +108,7 @@ const AllProducts = ({ AddToCart }) => {
                       </span>
                       <span className="mr-10">
                         <button
-                          className="bg-indigo-600 text-white p-2 rounded-md"
+                          className="bg-indigo-600 text-white p-2 rounded-md focus:outline-none hover:bg-indigo-800 transition duration-300 ease-in-out"
                           onClick={() => AddToCart(item)}
                         >
                           Add to cart
@@ -123,8 +121,7 @@ const AllProducts = ({ AddToCart }) => {
             </div>
           </div>
         </section>
-        </div>
-      </Layout>
+      </div>
     </>
   );
 };
