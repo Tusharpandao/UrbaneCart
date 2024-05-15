@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 const SignUp = () => {
   return (
     <Layout>
+      {/* this is signUp page  */}
       <section className="text-gray-600 body-font"  style={{ backgroundImage: `url(${loginImage})` }}>
         <div className="container px-5 py-14 mx-auto flex flex-wrap items-center">
           
@@ -21,6 +22,7 @@ const SignUp = () => {
               >
                 Full Name
               </label>
+             
               <input
                 type="text"
                 id="full-name"
