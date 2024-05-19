@@ -1,64 +1,60 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../Layout/Layout";
 import axios from "axios";
 import { PiStarThin } from "react-icons/pi";
 
 const Mens = ({ AddToCart }) => {
-  const [products, setProducts] = useState([]);
-  const [allCategory, setAllCategory] = useState([]);
-  const [selectProduct, setSelectProduct] = useState("");
+  let  [products, setProducts] = useState([]);
+  let  [allProducts, setAllProducts] = useState([]);
+  let  [category, setCategory] = useState([]);
+  let  [selectProductCategory, setSelectProductsCategory] = useState("");
 
-  const productsAPI = "https://dummyjson.com/products";
+  const productsAPI = "http://localhost:8084";
+
   //for getting all products and set that products  to the state
   useEffect(() => {
-    const categoryAPI = `${productsAPI}/categories`;
-
-    const fetchCategories = async () => {
+    let getProducts = async () => {
       try {
-        const response = await axios.get(categoryAPI);
-        const categories = response.data;
-
-        // Filter out unwanted categories
-        const filteredCategories = categories.filter((category) => {
-          return [
+        const response = await axios.get(`${productsAPI}/products`);
+        // Filter products based on specified categories
+        let filterProducts = response.data.data.filter((product) =>
+          [
             "fragrances",
             "skincare",
             "mens-shirts",
             "mens-shoes",
             "mens-watches",
             "sunglasses",
-          ].includes(category);
-        });
-
-        // Fetch products for each remaining category
-        const productsByCategory = await Promise.all(
-          filteredCategories.map(async (category) => {
-            const categoryProductsAPI = `${productsAPI}/category/${category}`;
-            const productResponse = await axios.get(categoryProductsAPI);
-            return productResponse.data.products;
-          })
+          ].includes(product.category.name)
         );
-
-        // Flatten the array of arrays
-        const allProducts = productsByCategory.flat();
-
-        // Update state with all products
-        setProducts(allProducts);
+        setProducts(filterProducts);
+        setAllProducts(filterProducts);
       } catch (error) {
         console.error("Error fetching categories and products:", error);
       }
     };
-
-    // Call the fetchCategories function when the component mounts
-    fetchCategories();
+    getProducts();
   }, []);
 
-  //for getting all product categories
+  //for getting all  categories
   useEffect(() => {
     const getAllProductCategory = async () => {
       try {
-        const res = await axios(`${productsAPI}/categories`);
-        setAllCategory(res.data);
+        const res = await axios.get(`${productsAPI}/categories`);
+        if (res && res.data && res.data.data) {
+          let filterCategory = res.data.data;
+          // Filter out wanted categories
+          filterCategory = filterCategory.filter((filterItems) =>
+            [
+              "fragrances",
+              "skincare",
+              "mens-shirts",
+              "mens-shoes",
+              "mens-watches",
+              "sunglasses",
+            ].includes(filterItems)
+          );
+          setCategory(filterCategory);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -66,52 +62,44 @@ const Mens = ({ AddToCart }) => {
     getAllProductCategory();
   }, []);
 
-  //for getting category vise product
+  //filter product by category 
   useEffect(() => {
-    const getCategoryProducts = async () => {
+   let  getCategoryProducts = async () => {
       try {
-        if (selectProduct) {
-          let res = await axios(`${productsAPI}/category/${selectProduct}`);
-          setProducts(res.data.products);
+        if (selectProductCategory) {
+          let selectedProducts = allProducts.filter((product) => {
+            return product.category.name === selectProductCategory;
+          });
+          // console.log(selectedProducts);
+          setProducts(selectedProducts);
         }
       } catch (error) {
         console.log(error);
       }
     };
     getCategoryProducts();
-  }, [selectProduct]);
+  }, [selectProductCategory]);
 
   // for setting selected category product in product which will  showing in ui
   const filterProducts = (selectedCategory) => {
     // console.log(selectedCategory);
-    setSelectProduct(selectedCategory);
+    setSelectProductsCategory(selectedCategory);
   };
   return (
     <>
-      <Layout>
+      
         <div className=" flex gap-3 flex-wrap ">
           <select
             onChange={(e) => filterProducts(e.target.value)}
             className="mx-auto"
           >
             <option>Filter by Category</option>
-            {allCategory
-              .filter((filterItems) =>
-                [
-                  "fragrances",
-                  "skincare",
-                  "mens-shirts",
-                  "mens-shoes",
-                  "mens-watches",
-                  "sunglasses",
-                ].includes(filterItems)
-              )
-              .map((allproduct, index) => (
-                <option value={allproduct} key={index}>
-                  {" "}
-                  {allproduct}
-                </option>
-              ))}
+            {category.map((categoryOption, index) => (
+              <option value={categoryOption} key={index}>
+                {" "}
+                {categoryOption}
+              </option>
+            ))}
           </select>
         </div>
         {/* product Section  */}
@@ -129,7 +117,7 @@ const Mens = ({ AddToCart }) => {
                   </a>
                   <div className="mt-4">
                     <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
-                      {item.category}
+                      {item.category.name}
                     </h3>
                     <h2 className="text-gray-9/*  */00 title-font text-lg font-medium">
                       {item.title}
@@ -154,9 +142,55 @@ const Mens = ({ AddToCart }) => {
             </div>
           </div>
         </section>
-      </Layout>
+ 
     </>
   );
 };
 
 export default Mens;
+
+//for getting all products and set that products  to the state
+// useEffect(() => {
+//   const categoryAPI = `${productsAPI}/categories`;
+
+//   const fetchCategories = async () => {
+//     try {
+//       // const response = await axios.get(categoryAPI);
+//       // const categories = response.data.data;
+//       console.log("fetchCategories function");
+//       console.log(allCategory);
+
+//       // Filter out unwanted categories
+//       // const filteredCategories = categories.filter((category) => {
+//       //   return [
+//       //     "fragrances",
+//       //     "skincare",
+//       //     "mens-shirts",
+//       //     "mens-shoes",
+//       //     "mens-watches",
+//       //     "sunglasses",
+//       //   ].includes(category);
+//       // });
+
+//       // Fetch products for each remaining category
+//       // const productsByCategory = await Promise.all(
+//       //   filteredCategories.map(async (category) => {
+//       //     const categoryProductsAPI = `${productsAPI}/products/category/${category}`;
+//       //     const productResponse = await axios.get(categoryProductsAPI);
+//       //     return productResponse.data.products;
+//       //   })
+//       // );
+
+//       // Flatten the array of arrays
+//       // const allProducts = productsByCategory.flat();
+
+//       // Update state with all products
+//       // setProducts(allProducts);
+//     } catch (error) {
+//       console.error("Error fetching categories and products:", error);
+//     }
+//   };
+
+//   // Call the fetchCategories function when the component mounts
+//   fetchCategories();
+// }, []);
