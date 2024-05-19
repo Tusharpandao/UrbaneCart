@@ -1,31 +1,48 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaCartShopping } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCrossCircled } from "react-icons/rx";
+import { CgShoppingCart } from "react-icons/cg";
+import { auth } from "../../FirebaseConfig/FirebaseConfig";
 
-const NavBar = () => {
+const NavBar = ({cart,}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleChange = () => {
     isOpen === false ? setIsOpen(true) : setIsOpen(false);
   };
+  useEffect(()=>{
+    
+const user = auth.currentUser;
+
+if (user !== null) {
+  user.providerData.forEach((profile) => {
+    console.log("Sign-in provider: " + profile.providerId);
+    console.log("  Provider-specific UID: " + profile.uid);
+    console.log("  Name: " + profile.displayName);
+    console.log("  Email: " + profile.email);
+    console.log("  Photo URL: " + profile.photoURL);
+  });
+}
+
+  },[])
   // }
   // const toggleClose=()=>{
   //   setIsOpen(false)
   // }
   return (
-    <>
-      <div>
-        <header className="bg-white border-b border-gray-200">
+ 
+        <header className="fixed top-0 w-full z-20 bg-white border-b border-gray-200">
           <div className="container mx-auto flex justify-between p-5 items-center">
             <div>
               <Link to="/">
                 <h3 className="font-bold text-2xl">
                   Urbane
                   <span className="text-[red]">
-                    Cart
+                    Cart  
                   </span>
+                  
                 </h3>
               </Link>
             </div>
@@ -43,8 +60,8 @@ const NavBar = () => {
                 <Link to="/mens">
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">Mens</li>
                 </Link>
-               <Link to="/kids">
-               <li className="mr-5 hover:text-gray-900 cursor-pointer">Kids</li>
+               <Link to="/Womens">
+               <li className="mr-5 hover:text-gray-900 cursor-pointer">Womens</li>
                </Link>
               </ul>
             </div>
@@ -68,8 +85,8 @@ const NavBar = () => {
                   <Link to="/mens">
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">Mens</li>
                 </Link>
-               <Link to="/kids">
-               <li className="mr-5 hover:text-gray-900 cursor-pointer">Kids</li>
+               <Link to="/Womens">
+               <li className="mr-5 hover:text-gray-900 cursor-pointer">Womens</li>
                </Link>
                 </ul>
                 <button className="absolute top-[75px] z-10 right-5 text-white py-4 cursor-pointer  ">
@@ -83,15 +100,16 @@ const NavBar = () => {
             <div className="flex justify-center items-center gap-3">
               <Link to="/signIn">
               <button
-                className=" bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-red-500
+                className=" bg-red-300 border-0 py-1 px-3 focus:outline-none hover:bg-red-500
                rounded text-base  font-semibold"
               >
                 Sign In
               </button>
               </Link>
               <Link to="/cart">
-                <button>
-                  <FaCartShopping size={25} />
+                <button className="relative inline-block">
+                  <span className="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 px-1 bg-red-500 rounded-[50%]  text-sm font-bold">{cart.length}</span>
+                  <CgShoppingCart size={35} />
                 </button>
               </Link>
               {
@@ -102,8 +120,7 @@ const NavBar = () => {
             </div>
           </div>
         </header>
-      </div>
-    </>
+      
   );
 };
 
