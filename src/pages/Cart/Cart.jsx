@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout/Layout";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
+
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -109,7 +109,7 @@ let continueShopping=()=>{
 }
 
   return (
-    <Layout>
+    <>
       <div className="w-[90%] mx-auto mt-10 ">
         <div className="flex flex-col md:flex-row shadow-md my-10 md:items-center">
           <div className="w-full lg:w-3/4 bg-white px-10 py-10">
@@ -241,7 +241,7 @@ let continueShopping=()=>{
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../Layout/Layout";
+
 import axios from "axios";
 import { PiStarThin } from "react-icons/pi";
 
@@ -93,7 +93,7 @@ const Womens = ({ AddToCart }) => {
   };
   return (
     <>
-      <Layout>
+      
         <div className=" flex gap-3 flex-wrap ">
           <select
             onChange={(e) => filterProducts(e.target.value)}
@@ -148,7 +148,7 @@ const Womens = ({ AddToCart }) => {
             </div>
           </div>
         </section>
-      </Layout>
+      
     </>
   );
 };
