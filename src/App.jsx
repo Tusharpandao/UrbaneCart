@@ -13,16 +13,21 @@ import Womens from "./components/Womens/Womens";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
 
+/**
+ * The main App component that manages the application's routing and state.
+ *
+ * The App component sets up the React Router and renders the main navigation bar, routes, and footer.
+ * It also manages the state of the shopping cart, providing an `AddToCart` function to add products to the cart.
+ */
 function App() {
   const [cart, setCart] = useState([]);
 
- 
   const AddToCart = (product) => {
     // Check if the product is already in the cart
     const existingProductIndex = cart.findIndex(
       (item) => item.id === product.id
     );
-    
+
     if (existingProductIndex !== -1) {
       // If the product exists, update its quantity
       const updatedCart = [...cart];
@@ -38,7 +43,7 @@ function App() {
     <>
       <div>
         <BrowserRouter>
-          <NavBar cart={cart}  />
+          <NavBar cart={cart} />
           <div className="flex-grow pt-[80px]">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -48,13 +53,10 @@ function App() {
               />
               <Route
                 path="/allProducts"
-                element={<AllProducts AddToCart={AddToCart}/>}
+                element={<AllProducts AddToCart={AddToCart} />}
               />
               <Route path="/signUp" element={<SignUp />} />
-              <Route
-                path="/signIn"
-                element={<SignIn />}
-              />
+              <Route path="/signIn" element={<SignIn />} />
               <Route path="/mens" element={<Mens AddToCart={AddToCart} />} />
               <Route
                 path="/Womens"
