@@ -33,7 +33,7 @@ let navigate = useNavigate();
           });
           toast.success(`${UserSingUp.userName} you are signed up successfully`)
 
-           navigate("/signIn") 
+           navigate("/") 
         })
         .catch((error) => {
           // const errorCode = error.code;
