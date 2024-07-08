@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RxCrossCircled } from "react-icons/rx";
 import { CgShoppingCart } from "react-icons/cg";
@@ -12,6 +12,7 @@ import { signOut } from "firebase/auth";
 
 const NavBar = ({ cart }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate =useNavigate();
 
   const [user, loading, error] = useAuthState(auth);   // Get user from auth state using react-firebase-hooks
 
@@ -25,6 +26,8 @@ const NavBar = ({ cart }) => {
 
     await signOut(auth).then(() => {
       toast.success("You are signed out successfully");
+      navigate("/signIn")
+
     }).catch((error) => {
       toast.error(error.message);
     });
@@ -104,7 +107,7 @@ const NavBar = ({ cart }) => {
 
 {user ? ( // Conditionally render if user is logged in
       <div>
-        <span className="mr-3 text-lg font-semibold">{user.displayName || user.email}</span>
+        <span className="mr-3 text-lg font-semibold">{user.displayName }</span>
         {/* Sign Out button  */}
         <button
           className=" bg-red-300 border-0 py-1 px-3 focus:outline-none hover:bg-red-500
@@ -118,7 +121,7 @@ const NavBar = ({ cart }) => {
       <Link to="/signIn">
         <button
           className=" bg-red-300 border-0 py-1 px-3 focus:outline-none hover:bg-red-500
-            rounded text-base  font-semibold"git 
+            rounded text-base  font-semibold"
         >
           Sign In
         </button>
