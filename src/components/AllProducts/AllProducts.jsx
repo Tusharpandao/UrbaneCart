@@ -15,21 +15,28 @@ const AllProducts = ({ AddToCart }) => {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  const productsAPI = "http://localhost:8084";
+  // const productsAPI = "http://localhost:8084"; 'https://dummyjson.com/products/categories'
+  // 'https://dummyjson.com/products/category-list'
+  const productsAPI = "https://dummyjson.com";
 
   //for getting all products and set that products  to the state and setAllProducts state
   useEffect(() => {
     const getProducts = async () => {
       try {
         setIsLoading(true); // Start loading
-        const response = await axios.get(`${productsAPI}/products`);
-        setProducts(response.data.data);
-        setAllProducts(response.data.data);
+        const response = await axios.get(`${productsAPI}/products?limit=200`);
+         console.log(response.data.products);
+        setProducts(response.data.products);
+        setAllProducts(response.data.products);
+        setIsLoading(false); 
       } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false); // Stop loading, whether successful or not
+        // console.error("Error fetching products:", error);
+        toast.error(error.message)
+      
       }
+      // } finally {
+      //   setIsLoading(false); // Stop loading, whether successful or not
+      // }
     };
     getProducts();
   }, []);
@@ -38,9 +45,12 @@ const AllProducts = ({ AddToCart }) => {
   useEffect(() => {
     const getAllProductCategory = () => {
       axios
-        .get(`${productsAPI}/categories`)
+        // .get(`${productsAPI}/categories`)
+        .get(`${productsAPI}/products/category-list`)
+
         .then((res) => {
-          setCategory(res.data.data);
+          // console.log(res.data);
+          setCategory(res.data);
         })
         .catch((err) => {
           console.error("Error fetching categories:", err);
@@ -54,7 +64,7 @@ const AllProducts = ({ AddToCart }) => {
     const getCategoryProducts = () => {
       if (selectProductCategory) {
         const selectedProducts = allProducts.filter(
-          (product) => product.category.name === selectProductCategory
+          (product) => product.category === selectProductCategory
         );
         setProducts(selectedProducts);
       } else {
@@ -62,7 +72,7 @@ const AllProducts = ({ AddToCart }) => {
       }
     };
     getCategoryProducts();
-  }, [selectProductCategory, allProducts]); // Added allProducts dependency
+  }, [selectProductCategory]); // Added allProducts dependency
 
   // Improved Search Filtering
   // useEffect(() => {
@@ -157,7 +167,7 @@ const AllProducts = ({ AddToCart }) => {
               className="bg-red-500 text-white px-4 py-2 ml-4 rounded-md shadow-md hover:bg-red-600" // Added styles
               onClick={handleByPrice}
             >
-              Filter By Price
+              Filter 
             </button>
           </div>
         </div>
@@ -180,7 +190,7 @@ const AllProducts = ({ AddToCart }) => {
                     </a>
                     <div className="mt-4 ">
                       <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
-                        {item.category.name}
+                        {item.category}
                       </h3>
                       <h2 className="text-gray-900 title-font text-lg font-medium">
                         {item.title}
