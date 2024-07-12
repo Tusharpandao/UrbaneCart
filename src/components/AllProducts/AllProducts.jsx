@@ -166,7 +166,7 @@ const AllProducts = ({ AddToCart }) => {
                   <h2 className="text-gray-900 title-font text-lg font-medium">
                     {item.title}
                   </h2>
-                  <p className="mt-1">${formatCurrency(item.price)}</p>
+                  <p className="mt-1">{formatCurrency(item.price)}</p>
                   <span className="mt-1 flex  items-center justify-between ">
                     <span className="mt-1 flex  items-center ">
                       <PiStarThin size={20} color="black" /> {item.rating}
