@@ -188,7 +188,7 @@ const formatCurrency = (amountInUSD) => {
                   <h2 className="text-gray-900 title-font text-lg font-medium">
                     {item.title}
                   </h2>
-                  <p className="mt-1">${formatCurrency(item.price)}</p>
+                  <p className="mt-1">{formatCurrency(item.price)}</p>
                   <span className="mt-1 flex  items-center justify-between ">
                     <span className="mt-1 flex  items-center ">
                       <PiStarThin size={20} color="black" /> {item.rating}
@@ -214,49 +214,3 @@ const formatCurrency = (amountInUSD) => {
 };
 
 export default Mens;
-
-//for getting all products and set that products  to the state
-// useEffect(() => {
-//   const categoryAPI = `${productsAPI}/categories`;
-
-//   const fetchCategories = async () => {
-//     try {
-//       // const response = await axios.get(categoryAPI);
-//       // const categories = response.data.data;
-//       console.log("fetchCategories function");
-//       console.log(allCategory);
-
-//       // Filter out unwanted categories
-//       // const filteredCategories = categories.filter((category) => {
-//       //   return [
-//       //     "fragrances",
-//       //     "skincare",
-//       //     "mens-shirts",
-//       //     "mens-shoes",
-//       //     "mens-watches",
-//       //     "sunglasses",
-//       //   ].includes(category);
-//       // });
-
-//       // Fetch products for each remaining category
-//       // const productsByCategory = await Promise.all(
-//       //   filteredCategories.map(async (category) => {
-//       //     const categoryProductsAPI = `${productsAPI}/products/category/${category}`;
-//       //     const productResponse = await axios.get(categoryProductsAPI);
-//       //     return productResponse.data.products;
-//       //   })
-//       // );
-
-//       // Flatten the array of arrays
-//       // const allProducts = productsByCategory.flat();
-
-//       // Update state with all products
-//       // setProducts(allProducts);
-//     } catch (error) {
-//       console.error("Error fetching categories and products:", error);
-//     }
-//   };
-
-//   // Call the fetchCategories function when the component mounts
-//   fetchCategories();
-// }, []);
