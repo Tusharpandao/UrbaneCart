@@ -8,13 +8,13 @@ const Mens = ({ AddToCart }) => {
   let  [category, setCategory] = useState([]);
   let  [selectProductCategory, setSelectProductsCategory] = useState("");
 
-  const productsAPI = "http://localhost:8084";
+  const productsAPI = "http://localhost:8084/products";
 
   //for getting all products and set that products  to the state
   useEffect(() => {
     let getProducts = async () => {
       try {
-        const response = await axios.get(`${productsAPI}/products`);
+        const response = await axios.get(`${productsAPI}`);
         // Filter products based on specified categories
         let filterProducts = response.data.data.filter((product) =>
           [
@@ -39,7 +39,7 @@ const Mens = ({ AddToCart }) => {
   useEffect(() => {
     const getAllProductCategory = async () => {
       try {
-        const res = await axios.get(`${productsAPI}/categories`);
+        const res = await axios.get(`${productsAPI}/category-list`);
         if (res && res.data && res.data.data) {
           let filterCategory = res.data.data;
           // Filter out wanted categories

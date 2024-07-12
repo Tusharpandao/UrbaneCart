@@ -17,14 +17,14 @@ const AllProducts = ({ AddToCart }) => {
 
   // const productsAPI = "http://localhost:8084"; 'https://dummyjson.com/products/categories'
   // 'https://dummyjson.com/products/category-list'
-  const productsAPI = "https://dummyjson.com";
+  const productsAPI = "https://dummyjson.com/products";
 
   //for getting all products and set that products  to the state and setAllProducts state
   useEffect(() => {
     const getProducts = async () => {
       try {
         setIsLoading(true); // Start loading
-        const response = await axios.get(`${productsAPI}/products?limit=200`);
+        const response = await axios.get(`${productsAPI}?limit=2000`);
          console.log(response.data.products);
         setProducts(response.data.products);
         setAllProducts(response.data.products);
@@ -46,7 +46,7 @@ const AllProducts = ({ AddToCart }) => {
     const getAllProductCategory = () => {
       axios
         // .get(`${productsAPI}/categories`)
-        .get(`${productsAPI}/products/category-list`)
+        .get(`${productsAPI}/category-list`)
 
         .then((res) => {
           // console.log(res.data);

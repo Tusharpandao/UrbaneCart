@@ -9,14 +9,14 @@ const Womens = ({ AddToCart }) => {
   let  [category, setCategory] = useState([]);
   let  [selectProductCategory, setSelectProductsCategory] = useState("");
 
-  const productsAPI = "http://localhost:8084";
+  const productsAPI = "http://localhost:8084/products";
   
   
    //for getting all  categories and filter womens category and set that categories  to the state
    useEffect(() => {
     const getAllProductCategory = async () => {
       try {
-        const res = await axios.get(`${productsAPI}/categories`);
+        const res = await axios.get(`${productsAPI}/category-list`);
         if (res && res.data && res.data.data) {
           let filterCategory = res.data.data;
           // Filter out wanted categories
@@ -43,7 +43,7 @@ const Womens = ({ AddToCart }) => {
   useEffect(() => {
     let getProducts = async () => {
       try {
-        const response = await axios.get(`${productsAPI}/products`);
+        const response = await axios.get(`${productsAPI}`);
         // Filter products based on specified categories
         let filterProducts = response.data.data.filter((product) =>
           [
