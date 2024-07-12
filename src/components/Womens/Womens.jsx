@@ -1,64 +1,41 @@
 import React, { useEffect, useState } from "react";
-
 import axios from "axios";
 import { PiStarThin } from "react-icons/pi";
+import toast from "react-hot-toast";
 
 const Womens = ({ AddToCart }) => {
-  let  [products, setProducts] = useState([]);
+  let [products, setProducts] = useState([]);
   let [allProducts, setAllProducts] = useState([]);
-  let  [category, setCategory] = useState([]);
-  let  [selectProductCategory, setSelectProductsCategory] = useState("");
+  let [category, setCategory] = useState([]);
+  let [selectProductCategory, setSelectProductsCategory] = useState("");
+  let [searchItem, setSearchItem] = useState("");
+  const [isLoading, setIsLoading] = useState(true); // Add isLoading state
+  const [exchangeRate, setExchangeRate] = useState(null);
 
-  const productsAPI = "http://localhost:8084/products";
-  
-  
-   //for getting all  categories and filter womens category and set that categories  to the state
-   useEffect(() => {
-    const getAllProductCategory = async () => {
-      try {
-        const res = await axios.get(`${productsAPI}/category-list`);
-        if (res && res.data && res.data.data) {
-          let filterCategory = res.data.data;
-          // Filter out wanted categories
-          filterCategory = filterCategory.filter((filterItems) =>
-            [
-              "womens-dresses",
-            "womens-bags",
-            "womens-jewellery",
-            "womens-shoes",
-            "womens-watches"
-            ].includes(filterItems)
-          );
-          
-          setCategory(filterCategory);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getAllProductCategory();
-  }, []);
+  const productsAPI = "https://dummyjson.com/products";
 
   //for getting all products and set that products  to the state
   useEffect(() => {
     let getProducts = async () => {
       try {
-        const response = await axios.get(`${productsAPI}`);
+        setIsLoading(true); // Start loading
+        const response = await axios.get(`${productsAPI}?limit=2000`);
         // Filter products based on specified categories
-        let filterProducts = response.data.data.filter((product) =>
+        let filterProducts = response.data.products.filter((product) =>
           [
-            
-            "womens-dresses",
             "womens-bags",
+            "womens-dresses",
+            "tops",
             "womens-jewellery",
             "womens-shoes",
             "womens-watches",
-          ].includes(product.category.name)
+            "beauty",
+            "skin-care",
+          ].includes(product.category)
         );
-        // console.log(filterProducts);
-       
         setProducts(filterProducts);
         setAllProducts(filterProducts);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching categories and products:", error);
       }
@@ -66,50 +43,134 @@ const Womens = ({ AddToCart }) => {
     getProducts();
   }, []);
 
- 
-
-  //filter product by category 
+  //for getting all  categories
   useEffect(() => {
-   let  getCategoryProducts = async () => {
+    const getAllProductCategory = async () => {
       try {
-        if (selectProductCategory) {
-          let selectedProducts = allProducts.filter((product) => {
-            return product.category.name === selectProductCategory;
-          });
-          // console.log(selectedProducts);
-          setProducts(selectedProducts);
+        const res = await axios.get(`${productsAPI}/category-list`);
+        if (res && res.data) {
+          let filterCategory = res.data;
+          // Filter out wanted categories
+          filterCategory = filterCategory.filter((filterItems) =>
+            [
+              "womens-bags",
+              "womens-dresses",
+              "tops",
+              "womens-jewellery",
+              "womens-shoes",
+              "womens-watches",
+              "beauty",
+              "skin-care",
+            ].includes(filterItems)
+          );
+          setCategory(filterCategory);
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error.message);
       }
+    };
+    getAllProductCategory();
+  }, []);
+
+  //filter product by category
+  useEffect(() => {
+    let getCategoryProducts = () => {
+      if (selectProductCategory) {
+        let selectedProducts = allProducts.filter((product) => {
+          return product.category === selectProductCategory;
+        });
+        setProducts(selectedProducts);
+      } else {
+        setProducts(allProducts);
+      }
+      
     };
     getCategoryProducts();
   }, [selectProductCategory]);
 
+  // Improved Search Filtering
+  useEffect(() => {
+    const searchProduct = allProducts.filter((item) =>
+      item.title.toLowerCase().includes(searchItem.toLowerCase())
+    );
+    setProducts(searchProduct);
+  }, [searchItem, allProducts]); // Added allProducts dependency
+
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const response = await axios.get(
+          "https://open.er-api.com/v6/latest/USD"
+        ); // Example exchange rate API
+        setExchangeRate(response.data.rates.INR);
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+        // You could set a default rate or display an error message here
+      }
+    };
+
+    fetchExchangeRate();
+
+    // Optional: Set up interval to periodically update the rate
+    const intervalId = setInterval(fetchExchangeRate, 3600000); // Update every hour (adjust as needed)
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
+
+  const formatCurrency = (amountInUSD) => {
+    if (exchangeRate === null) {
+      return "Loading..."; // Show loading message while fetching rate
+    }
+
+    const amountInINR = amountInUSD * exchangeRate;
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amountInINR);
+  };
+
   // for setting selected category product in product which will  showing in ui
   const filterProducts = (selectedCategory) => {
-    // console.log(selectedCategory);
     setSelectProductsCategory(selectedCategory);
+  };
+  const clearSearch = () => {
+    setSearchItem("");
   };
   return (
     <>
-      
-        <div className=" flex gap-3 flex-wrap ">
-          <select
-            onChange={(e) => filterProducts(e.target.value)}
-            className="mx-auto"
+      <div className=" container mx-auto items-center flex flex-col bg-gray-100 flex-wrap ">
+        <select
+          onChange={(e) => filterProducts(e.target.value)}
+          className="mx-auto p-2 rounded-md shadow-md my-5"
+        >
+          <option>Filter by Category</option>
+          {category.map((categoryOption, index) => (
+            <option value={categoryOption} key={index}>
+              {" "}
+              {categoryOption}
+            </option>
+          ))}
+        </select>
+        <div className=" flex justify-center items-center mb-5 ">
+          <input
+            placeholder="Search Item"
+            className="border-2 border-gray-300 p-2 rounded-md shadow-md" // Added styles
+            onChange={(e) => setSearchItem(e.target.value)}
+            value={searchItem}
+          />
+          <button
+            className="bg-red-500 text-white p-2 ml-4 rounded-md shadow-md hover:bg-red-600" // Added styles
+            onClick={clearSearch}
           >
-            <option>Filter by Category</option>
-            {category.map((categoryOption, index) => (
-              <option value={categoryOption} key={index}>
-                {" "}
-                {categoryOption}
-              </option>
-            ))}
-          </select>
+            Clear
+          </button>
         </div>
-        {/* product Section  */}
-        <section className="text-gray-600 body-font">
+      </div>
+      {/* product Section  */}
+      <section className="text-gray-600 body-font">
+        {isLoading ? ( // Conditional rendering
+          <div className="text-center text-2xl">Loading Products...</div>
+        ) : (
           <div className="container px-5 py-12 mx-auto">
             <div className="flex flex-wrap -m-4">
               {products.map((item) => (
@@ -123,12 +184,12 @@ const Womens = ({ AddToCart }) => {
                   </a>
                   <div className="mt-4">
                     <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">
-                      {item.category.name}
+                      {item.category}
                     </h3>
-                    <h2 className="text-gray-9/*  */00 title-font text-lg font-medium">
+                    <h2 className="text-gray-900 title-font text-lg font-medium">
                       {item.title}
                     </h2>
-                    <p className="mt-1">${item.price}</p>
+                    <p className="mt-1">{formatCurrency(item.price)}</p>
                     <span className="mt-1 flex  items-center justify-between ">
                       <span className="mt-1 flex  items-center ">
                         <PiStarThin size={20} color="black" /> {item.rating}
@@ -147,8 +208,8 @@ const Womens = ({ AddToCart }) => {
               ))}
             </div>
           </div>
-        </section>
-      
+        )}
+      </section>
     </>
   );
 };
