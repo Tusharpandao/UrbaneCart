@@ -22,8 +22,6 @@ const NavBar = ({ cart }) => {
   };
 
   const handleSignOut = async () => {
-    // auth.signOut();
-
     await signOut(auth).then(() => {
       toast.success("You are signed out successfully");
       navigate("/signIn")
@@ -49,8 +47,8 @@ const NavBar = ({ cart }) => {
             <Link to="/">
               <li className="mr-5 hover:text-gray-900 cursor-pointer">Home</li>{" "}
             </Link>
-            <Link to="/allProducts">
-              <li className="mr-5 hover:text-gray-900 cursor-pointer">
+            <Link to="/allProducts" >
+              <li className="mr-5 hover:text-gray-900 cursor-pointer" >
                 All Product
               </li>
             </Link>
@@ -68,26 +66,26 @@ const NavBar = ({ cart }) => {
         {isOpen ? (
           <div className="">
             <ul
-              className="flex flex-col gap-10 text-2xl absolute top-[73px] left-0 h-screen w-full  z-10 bg-red-500 text-white
+              className="flex flex-col gap-10 text-2xl absolute top-[73px] left-0 h-screen w-screen  z-10 bg-red-500 text-white
                items-center justify-center font-semibold"
             >
-              <Link to="/">
+              <Link to="/" onClick={toggleChange}>
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">
                   Home
                 </li>
               </Link>
 
-              <Link to="/allProducts">
+              <Link to="/allProducts" onClick={toggleChange}>
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">
                   All Product
                 </li>
               </Link>
-              <Link to="/mens">
+              <Link to="/mens" onClick={toggleChange}>
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">
                   Mens
                 </li>
               </Link>
-              <Link to="/Womens">
+              <Link to="/Womens" onClick={toggleChange}>
                 <li className="mr-5 hover:text-gray-900 cursor-pointer">
                   Womens
                 </li>
