@@ -12,6 +12,7 @@ const Cart = ({ cart, setCart }) => {
   let  [discountApplied, setDiscountApplied] = useState(true);
   let navigate=useNavigate()
   
+  
 
   useEffect(() => {
     // Calculate total price for all items in the cart
