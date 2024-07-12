@@ -12,6 +12,7 @@ import { useState } from "react";
 import Womens from "./components/Womens/Womens";
 import NavBar from "./components/NavBar/NavBar";
 import Footer from "./components/Footer/Footer";
+import toast from "react-hot-toast";
 
 /**
  * The main App component that manages the application's routing and state.
@@ -33,9 +34,11 @@ function App() {
       const updatedCart = [...cart];
       updatedCart[existingProductIndex].quantity++;
       setCart(updatedCart);
+      toast.success(`One again  ${product.title} added successfully`)      
     } else {
       // If the product is not in the cart, add it with quantity 1
       setCart([...cart, { ...product, quantity: 1 }]);
+      toast.success(`${product.title} added successfully`)
     }
   };
 
