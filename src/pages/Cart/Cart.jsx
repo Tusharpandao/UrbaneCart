@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-
+import axios from "axios";
 import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,8 @@ const Cart = ({ cart, setCart }) => {
   let  [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
   let  [promoCode, setPromoCode] = useState("");
   let  [discountApplied, setDiscountApplied] = useState(true);
+  const [exchangeRate, setExchangeRate] = useState(null);
+
   let navigate=useNavigate()
   
   useEffect(() => {
@@ -64,6 +66,41 @@ const Cart = ({ cart, setCart }) => {
       setItemToRemoveId(null);
     }
   }, [cart, itemToRemoveId]);
+
+
+  
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const response = await axios.get(
+          "https://open.er-api.com/v6/latest/USD"
+        ); // Example exchange rate API
+        setExchangeRate(response.data.rates.INR);
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+        // You could set a default rate or display an error message here
+      }
+    };
+
+    fetchExchangeRate();
+
+    // Optional: Set up interval to periodically update the rate
+    const intervalId = setInterval(fetchExchangeRate, 3600000); // Update every hour (adjust as needed)
+
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
+
+  const formatCurrency = (amountInUSD) => {
+    if (exchangeRate === null) {
+      return "Loading..."; // Show loading message while fetching rate
+    }
+
+    const amountInINR = amountInUSD * exchangeRate;
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amountInINR);
+  };
 
   const handleDec = (item) => {
     // Create a new array to avoid mutating the original state
@@ -170,10 +207,10 @@ let continueShopping=()=>{
                   </button>
                 </div>
                 <span className="text-center w-1/5 font-semibold text-sm">
-                  ${cartItem.price}
+                  {formatCurrency(cartItem.price)}
                 </span>
                 <span className="text-center w-1/5 font-semibold text-sm">
-                  ${cartItem.price * cartItem.quantity}
+                  {formatCurrency((cartItem.price * cartItem.quantity))}
                 </span>
               </div>
             ))}
@@ -196,14 +233,14 @@ let continueShopping=()=>{
               <span className="font-semibold text-sm uppercase">
                 {totalItemsQuantity} Items{" "}
               </span>
-              <span className="font-semibold text-sm">{totalPrice}$</span>
+              <span className="font-semibold text-sm">{formatCurrency(totalPrice)}</span>
             </div>
             <div>
               <label className="font-medium inline-block mb-3 text-sm uppercase">
                 Shipping
               </label>
               <select className="block p-2 text-gray-600 w-full text-sm">
-                <option>Standard shipping - $10.00</option>
+                <option>Standard shipping 100.00 ₹ </option>
               </select>
             </div>
             <div className="py-10">
@@ -231,7 +268,7 @@ let continueShopping=()=>{
             <div className="border-t mt-8">
               <div className="flex font-semibold justify-between py-6 text-sm uppercase">
                 <span>Total cost</span>
-                <span>${totalPrice}</span>
+                <span>${formatCurrency(totalPrice)}</span>
               </div>
               <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
                 Checkout
