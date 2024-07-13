@@ -21,15 +21,15 @@ const NavBar = ({ cart }) => {
     isOpen === false ? setIsOpen(true) : setIsOpen(false);
   };
 
-  const handleSignOut = async () => {
-    await signOut(auth).then(() => {
-      toast.success("You are signed out successfully");
-      navigate("/signIn")
+  // const handleSignOut = async () => {
+  //   await signOut(auth).then(() => {
+  //     toast.success("You are signed out successfully");
+  //     navigate("/signIn")
 
-    }).catch((error) => {
-      toast.error(error.message);
-    });
-  };
+  //   }).catch((error) => {
+  //     toast.error(error.message);
+  //   });
+  // };
  
   return (
     <header className="fixed top-0 w-full z-20 bg-white border-b border-gray-200">
