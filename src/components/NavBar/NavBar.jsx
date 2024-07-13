@@ -107,13 +107,13 @@ const NavBar = ({ cart }) => {
       <div>
         <span className="mr-3 text-lg font-semibold">{user.displayName }</span>
         {/* Sign Out button  */}
-        <button
+        {/* <button
           className=" bg-red-300 border-0 py-1 px-3 focus:outline-none hover:bg-red-500
             rounded text-base  font-semibold"
             onClick={handleSignOut}
         >
           Sign Out
-        </button>
+        </button> */}
       </div>
     ) : ( 
       <Link to="/signIn">
