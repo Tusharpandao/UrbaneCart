@@ -154,12 +154,12 @@ const Womens = ({ AddToCart }) => {
         <div className=" flex justify-center items-center mb-5 ">
           <input
             placeholder="Search Item"
-            className="border-2 border-gray-300 p-2 rounded-md shadow-md" // Added styles
+            className="border-2 border-gray-300 p-2 rounded-md shadow-md " // Added styles
             onChange={(e) => setSearchItem(e.target.value)}
             value={searchItem}
           />
           <button
-            className="bg-red-500 text-white p-2 ml-4 rounded-md shadow-md hover:bg-red-600" // Added styles
+            className="bg-red-500 text-white p-2 ml-4  rounded-md shadow-md hover:bg-red-600" // Added styles
             onClick={clearSearch}
           >
             Clear
@@ -172,7 +172,7 @@ const Womens = ({ AddToCart }) => {
           <div className="text-center text-2xl">Loading Products...</div>
         ) : (
           <div className="container px-5 py-12 mx-auto">
-            <div className="flex flex-wrap -m-4">
+            <div className="flex flex-wrap m-4 ">
               {products.map((item) => (
                 <div className="lg:w-1/4 md:w-1/2 p-3 w-full  " key={item.id}>
                   <a className="block relative h-48 rounded overflow-hidden">
