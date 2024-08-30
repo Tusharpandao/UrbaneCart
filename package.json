@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
-    "axios": "^1.6.8",
+    "axios": "^1.7.5",
     "firebase": "^10.12.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
