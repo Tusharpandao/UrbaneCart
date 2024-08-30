@@ -57,7 +57,7 @@ const Footer = () => {
               <ul className="list-none mb-10">
                 <li className="mt-1">Contact Support</li>
                 <li className="mt-1">Info Center</li>
-                <li className="mt-1">Activate</li>
+             
                 
               </ul>
             </div>
