@@ -1,7 +1,23 @@
+import { signOut } from "firebase/auth";
 import React from "react";
+import toast from "react-hot-toast";
 import { FaFacebook,  FaInstagram, FaRegCopyright, FaTwitter } from "react-icons/fa";
+import {  useNavigate } from "react-router-dom";
+import { auth } from "../../FirebaseConfig/FirebaseConfig";
 
 const Footer = () => {
+
+  const navigate =useNavigate();
+
+    const handleSignOut = async () => {
+    await signOut(auth).then(() => {
+      toast.success("You are signed out successfully");
+      navigate("/signIn")
+
+    }).catch((error) => {
+      toast.error(error.message);
+    });
+  };
   return (
     <>
       <footer className="bg-black text-white">
@@ -21,7 +37,7 @@ const Footer = () => {
                 <li className="mt-1">Features</li>
                 <li className="mt-1">Info Center</li>
                 <li className="mt-1">News Blog</li>
-                <li className="mt-1">Login</li>
+                <button onClick={handleSignOut}><li className="mt-1">SignOut</li></button>
               </ul>
             </div>
 
