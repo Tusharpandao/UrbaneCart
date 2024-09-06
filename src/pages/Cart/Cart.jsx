@@ -5,22 +5,31 @@ import { FaLongArrowAltLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const Cart = ({ cart, setCart }) => {
-  let  [totalPrice, setTotalPrice] = useState(0);
-  let  [itemToRemoveId, setItemToRemoveId] = useState(null);
-  let  [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
-  let  [promoCode, setPromoCode] = useState("");
-  let  [discountApplied, setDiscountApplied] = useState(true);
+  let [totalPrice, setTotalPrice] = useState(0);
+  let [itemToRemoveId, setItemToRemoveId] = useState(null);
+  let [totalItemsQuantity, setTotalItemsQuantity] = useState(0);
+  let [promoCode, setPromoCode] = useState("");
+  let [discountApplied, setDiscountApplied] = useState(false);
   const [exchangeRate, setExchangeRate] = useState(null);
 
-  let navigate=useNavigate()
-  
+  let navigate = useNavigate();
+
   useEffect(() => {
-    // Calculate total price for all items in the cart
-    const totalPrice = cart.reduce((total, cartItem) => {
-      return total + cartItem.price * cartItem.quantity;
-    }, 0);
-    // Set the total price state
-    setTotalPrice(totalPrice);
+    // Calculate total price for all items in the cart (initial and after discount)
+    const calculateTotalPrice = () => {
+      let total = 0;
+      cart.forEach((cartItem) => {
+        total += cartItem.price * cartItem.quantity;
+      });
+
+      if (discountApplied && promoCode.toUpperCase() === "NEW50") {
+        total = total / 2; // Apply discount if valid code is entered
+      }
+
+      setTotalPrice(total);
+    };
+
+    calculateTotalPrice();
 
     const getTotalQuantity = () => {
       let totalQuantity = 0;
@@ -30,7 +39,8 @@ const Cart = ({ cart, setCart }) => {
       return totalQuantity;
     };
     setTotalItemsQuantity(getTotalQuantity);
-  }, [cart]);
+  }, [cart, promoCode, discountApplied,totalItemsQuantity]);
+
   const removeFromCart = (id) => {
     // Filter out the item with the specified id
     const updatedCart = cart.filter((item) => item.id !== id);
@@ -54,6 +64,11 @@ const Cart = ({ cart, setCart }) => {
           "You have reached the maximum amount available for this product."
         );
       }
+      // Recalculate total price after quantity update
+      setTotalPrice((prevPrice) => {
+        const priceChange = item.price * (updatedCart[itemIndex].quantity - prevPrice / item.price);
+        return prevPrice + priceChange;
+      });
       // Update the cart state with the updated array
       setCart(updatedCart);
     }
@@ -67,21 +82,19 @@ const Cart = ({ cart, setCart }) => {
     }
   }, [cart, itemToRemoveId]);
 
+  const fetchExchangeRate = async () => {
+    try {
+      const response = await axios.get(
+        "https://open.er-api.com/v6/latest/USD"
+      ); // Example exchange rate API
+      setExchangeRate(response.data.rates.INR);
+    } catch (error) {
+      console.error("Error fetching exchange rate:", error);
+      // You could set a default rate or display an error message here
+    }
+  };
 
-  
   useEffect(() => {
-    const fetchExchangeRate = async () => {
-      try {
-        const response = await axios.get(
-          "https://open.er-api.com/v6/latest/USD"
-        ); // Example exchange rate API
-        setExchangeRate(response.data.rates.INR);
-      } catch (error) {
-        console.error("Error fetching exchange rate:", error);
-        // You could set a default rate or display an error message here
-      }
-    };
-
     fetchExchangeRate();
 
     // Optional: Set up interval to periodically update the rate
@@ -115,34 +128,45 @@ const Cart = ({ cart, setCart }) => {
         updatedCart[itemIndex].quantity--;
       } else {
         let confirmation = window.confirm(
-          `You have reached the minimum quantity for this product.  Are you sure you want to remove it?`
+          `You have reached the minimum quantity for this product.  Are you sure you want to remove it?`
         );
         if (confirmation) {
           setItemToRemoveId(item.id);
         }
       }
+      // Recalculate total price after quantity update
+      setTotalPrice((prevPrice) => {
+        const priceChange = item.price * (updatedCart[itemIndex].quantity - prevPrice / item.price);
+        return prevPrice + priceChange;
+      });
       // Update the cart state with the updated array
       setCart(updatedCart);
     }
   };
+
   const applyPromoCode = () => {
     if (promoCode.toUpperCase() === "NEW50") {
-      if (discountApplied) {
+      if (!discountApplied) {
         let discountedPrice = totalPrice / 2;
         // Apply discount
         setTotalPrice(discountedPrice);
-        setDiscountApplied(false);
+        setDiscountApplied(true);
         toast.success("Promo Code Applied");
       } else {
         toast.error("Promo Code Already Applied");
       }
     } else {
+      // Remove the discount and reset total price if the promo code is invalid
+      setTotalPrice(cart.reduce((total, cartItem) => total + cartItem.price * cartItem.quantity, 0));
+      setDiscountApplied(false);
       toast.error("Invalid promo code");
     }
   };
-let continueShopping=()=>{
-  navigate(-1)
-}
+
+  let continueShopping = () => {
+    navigate(-1);
+  };
+
 
   return (
     <>
@@ -268,7 +292,7 @@ let continueShopping=()=>{
             <div className="border-t mt-8">
               <div className="flex font-semibold justify-between py-6 text-sm uppercase">
                 <span>Total cost</span>
-                <span>${formatCurrency(totalPrice)}</span>
+                <span>{formatCurrency(totalPrice)}</span>
               </div>
               <button className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">
                 Checkout
